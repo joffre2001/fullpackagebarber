@@ -26,22 +26,18 @@ function getBookingSheet() {
   return sheet;
 }
 
-function doGet() {
+function getBookings() {
   const spreadSheet = SpreadsheetApp.openById(SHEET_ID);
   const sheet = spreadSheet.getSheetByName('Bookings');
 
   if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify([]))
-      .setMimeType(ContentService.MimeType.JSON);
+    return [];
   }
 
   const values = sheet.getDataRange().getValues();
 
   if (values.length <= 1) {
-    return ContentService
-      .createTextOutput(JSON.stringify([]))
-      .setMimeType(ContentService.MimeType.JSON);
+    return [];
   }
 
   const headers = values[0];
@@ -49,19 +45,35 @@ function doGet() {
     return Object.fromEntries(headers.map((header, index) => [header, row[index] ?? '']));
   });
 
+  return rows;
+}
+
+function jsonResponse(data) {
   return ContentService
-    .createTextOutput(JSON.stringify(rows))
+    .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet() {
+  return jsonResponse({ ok: false, error: 'Método não permitido' });
 }
 
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents || '{}');
 
+    if (payload.action === 'list') {
+      const expectedKey = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
+
+      if (!expectedKey || payload.adminKey !== expectedKey) {
+        return jsonResponse({ ok: false, error: 'Acesso negado' });
+      }
+
+      return jsonResponse({ ok: true, bookings: getBookings() });
+    }
+
     if (!payload || !payload.name || !payload.phone || !payload.service || !payload.date || !payload.time) {
-      return ContentService
-        .createTextOutput(JSON.stringify({ ok: false, error: 'Dados inválidos' }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return jsonResponse({ ok: false, error: 'Dados inválidos' });
     }
 
     const sheet = getBookingSheet();
@@ -77,12 +89,8 @@ function doPost(e) {
 
     sheet.appendRow(row);
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ ok: true });
   } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: false, error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ ok: false, error: 'Não foi possível processar a solicitação' });
   }
 }

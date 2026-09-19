@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const yearElement = document.getElementById('currentYear');
-  const BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzsD76pZcDMS9sZkAMwlMycc0AKZ1g_8MpgZCWkrcm1YYc-87PgBnInj6VdBHHRmPjV/exec';
+  const BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyyW9Z50EmNYSlRC3QFCbjq7z5BdOC4wpg8DnVLbwLz9UoeNFTyuzp3h-vJcm4bXe5D/exec';
 
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendEmail = (booking) => {
     const subject = encodeURIComponent(`Agendamento - ${booking.service}`);
     const body = encodeURIComponent(createBookingMessage(booking));
-    window.location.href = `mailto:hello@blackstonebarber.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:EMAIL_PLACEHOLDER?subject=${subject}&body=${body}`;
   };
 
   const openGoogleCalendar = (booking) => {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const details = encodeURIComponent(createBookingMessage(booking));
-    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Agendamento Blackstone Barber')}&details=${details}&location=${encodeURIComponent('Rua Principal, 123, Chapecó, Brasil')}&dates=${formatCalendarDate(startDate)}/${formatCalendarDate(endDate)}`;
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Agendamento FullPacakage Barber')}&details=${details}&location=${encodeURIComponent('Rua Cunha Porã, 2625, Efapi, Chapecó - SC')}&dates=${formatCalendarDate(startDate)}/${formatCalendarDate(endDate)}`;
     window.open(url, '_blank');
   };
 
@@ -65,13 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'BEGIN:VEVENT',
-      `UID:${Date.now()}@blackstonebarber.com`,
+      `UID:${Date.now()}@fullpacakagebarber`,
       `DTSTAMP:${formatIcs(new Date())}`,
       `DTSTART:${formatIcs(startDate)}`,
       `DTEND:${formatIcs(endDate)}`,
-      'SUMMARY:Agendamento Blackstone Barber',
+      'SUMMARY:Agendamento FullPacakage Barber',
       `DESCRIPTION:${description}`,
-      'LOCATION:Rua Principal, 123, Chapecó, Brasil',
+      'LOCATION:Rua Cunha Porã, 2625, Efapi, Chapecó - SC',
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\r\n');
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'agendamento-blackstone.ics';
+    link.download = 'agendamento-fullpacakage-barber.ics';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -93,9 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
       createdAt: new Date().toISOString()
     };
 
-    const localBookings = JSON.parse(localStorage.getItem('blackstoneBookings') || '[]');
+    const localBookings = JSON.parse(localStorage.getItem('fullPacakageBookings') || '[]');
     localBookings.push(payload);
-    localStorage.setItem('blackstoneBookings', JSON.stringify(localBookings));
+    localStorage.setItem('fullPacakageBookings', JSON.stringify(localBookings));
 
     if (!BOOKING_ENDPOINT || BOOKING_ENDPOINT.includes('PASTE_')) {
       return;

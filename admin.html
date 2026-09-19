@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blackstone Barber | Reservas</title>
+  <title>FullPacakage Barber | Reservas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <style>
     body {
@@ -35,10 +35,23 @@
         <p class="text-warning fw-bold mb-1" style="letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.72rem;">Admin</p>
         <h1 class="mb-0">Reservas</h1>
       </div>
-      <button class="btn btn-warning text-dark fw-semibold" id="refreshButton" type="button">Atualizar</button>
+      <button class="btn btn-warning text-dark fw-semibold d-none" id="refreshButton" type="button">Atualizar</button>
     </div>
 
-    <div class="card p-3 p-md-4">
+    <div class="card p-3 p-md-4 mb-4" id="accessCard">
+      <form id="accessForm" class="row g-3 align-items-end">
+        <div class="col-md-9">
+          <label for="adminKey" class="form-label">Chave de acesso</label>
+          <input id="adminKey" name="adminKey" type="password" class="form-control" autocomplete="current-password" required>
+        </div>
+        <div class="col-md-3 d-grid">
+          <button class="btn btn-warning text-dark fw-semibold" type="submit">Entrar</button>
+        </div>
+        <p id="accessStatus" class="text-danger mb-0 d-none" role="alert"></p>
+      </form>
+    </div>
+
+    <div class="card p-3 p-md-4 d-none" id="reservationsCard">
       <div class="table-responsive">
         <table class="table table-dark table-striped align-middle mb-0">
           <thead>
@@ -54,7 +67,7 @@
           </thead>
           <tbody id="reservationsBody">
             <tr>
-              <td colspan="7" class="text-center text-secondary">Carregando reservas...</td>
+              <td colspan="7" class="text-center text-secondary">Informe a chave de acesso.</td>
             </tr>
           </tbody>
         </table>
