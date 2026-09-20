@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const openWhatsApp = (booking) => {
-    const phone = '5542999999999';
+    const phone = '5549984044553'; // Replace with your WhatsApp number in international format
     const text = encodeURIComponent(createBookingMessage(booking));
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
   };
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendEmail = (booking) => {
     const subject = encodeURIComponent(`Agendamento - ${booking.service}`);
     const body = encodeURIComponent(createBookingMessage(booking));
-    window.location.href = `mailto:EMAIL_PLACEHOLDER?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:visaosoinesewilmane@gmail.com?subject=${subject}&body=${body}`;
   };
 
   const openGoogleCalendar = (booking) => {
