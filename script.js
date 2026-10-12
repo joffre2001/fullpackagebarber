@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const yearElement = document.getElementById('currentYear');
-  const BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyyW9Z50EmNYSlRC3QFCbjq7z5BdOC4wpg8DnVLbwLz9UoeNFTyuzp3h-vJcm4bXe5D/exec';
+  const BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw5CUgGI4QOFa5w_ni8_7DRLNPVIHI5aO_O1OBTIClFaNpkFQ5AqIaZrL-x12xTxI0w/exec';
 
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const bookingForm = document.getElementById('bookingForm');
   const bookingStatus = document.getElementById('bookingStatus');
+
+  const generateBookingId = () => {
+    if (window.crypto && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  };
 
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return '';
@@ -21,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const openWhatsApp = (booking) => {
-    const phone = '5549984044553'; // Replace with your WhatsApp number in international format
+    const phone = '5549984044553';
     const text = encodeURIComponent(createBookingMessage(booking));
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
   };
@@ -87,61 +95,94 @@ document.addEventListener('DOMContentLoaded', () => {
     URL.revokeObjectURL(url);
   };
 
+  let submitting = false;
+  let retryPayload = null;
+  let retryFingerprint = '';
   const saveBooking = async (booking) => {
-    const payload = {
-      ...booking,
-      createdAt: new Date().toISOString()
-    };
-
-    const localBookings = JSON.parse(localStorage.getItem('fullPacakageBookings') || '[]');
-    localBookings.push(payload);
-    localStorage.setItem('fullPacakageBookings', JSON.stringify(localBookings));
-
-    if (!BOOKING_ENDPOINT || BOOKING_ENDPOINT.includes('PASTE_')) {
-      return;
+    const fingerprint = JSON.stringify(booking);
+    if (!retryPayload || fingerprint !== retryFingerprint) {
+      retryFingerprint = fingerprint;
+      retryPayload = { ...booking, id: generateBookingId(), status: 'pending' };
     }
-
+    const payload = retryPayload;
+    if (!BOOKING_ENDPOINT || BOOKING_ENDPOINT.includes('PASTE_')) {
+      throw new Error('O agendamento online ainda não está configurado.');
+    }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
     try {
-      await fetch(BOOKING_ENDPOINT, {
+      const response = await fetch(BOOKING_ENDPOINT, {
         method: 'POST',
         mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'save', ...payload }),
+        signal: controller.signal
       });
-    } catch (error) {
-      console.error('Unable to sync booking to remote server:', error);
+      if (!response.ok) throw new Error('O servidor respondeu com erro HTTP ' + response.status + '. Tente novamente.');
+      const result = await response.json();
+      if (result.ok !== true) throw new Error(result.error || 'O servidor não confirmou o agendamento.');
+      // Keep a local copy only after the server has acknowledged the save.
+      // A storage failure must not turn a confirmed reservation into an error.
+      try {
+        const stored = JSON.parse(localStorage.getItem('fullPacakageBookings') || '[]');
+        if (Array.isArray(stored) && !stored.some(item => item.id === payload.id)) {
+          stored.push({ ...payload, syncedAt: new Date().toISOString() });
+          localStorage.setItem('fullPacakageBookings', JSON.stringify(stored));
+        }
+      } catch (_) { /* Remote save is authoritative. */ }
+      retryPayload = null;
+      retryFingerprint = '';
+      return payload;
+    } finally {
+      clearTimeout(timeout);
     }
   };
 
   if (bookingForm) {
+    bookingStatus.textContent = 'Preencha os campos e clique em Confirmar agendamento para enviar à barbearia.';
+    bookingStatus.classList.remove('d-none');
+    bookingForm.addEventListener('invalid', (event) => {
+      const label = event.target.labels && event.target.labels[0];
+      bookingStatus.textContent = 'Confira o campo ' + (label ? label.textContent : 'obrigatório') + ' antes de enviar.';
+      bookingStatus.classList.remove('d-none', 'text-success');
+      bookingStatus.classList.add('text-danger');
+    }, true);
     bookingForm.addEventListener('submit', async (event) => {
       event.preventDefault();
-
-      const formData = new FormData(bookingForm);
-      const booking = Object.fromEntries(formData.entries());
-
-      if (!booking.name || !booking.phone || !booking.service || !booking.date || !booking.time) {
-        bookingStatus.textContent = 'Preencha todos os campos obrigatórios antes de confirmar o agendamento.';
-        bookingStatus.classList.remove('d-none', 'text-success');
+      if (submitting || !bookingForm.reportValidity()) return;
+      const booking = Object.fromEntries(new FormData(bookingForm).entries());
+      const submit = bookingForm.querySelector('[type="submit"]');
+      const originalLabel = submit.textContent;
+      submitting = true;
+      submit.disabled = true;
+      submit.textContent = 'Enviando…';
+      bookingStatus.textContent = 'Enviando sua solicitação para a barbearia…';
+      bookingStatus.classList.remove('d-none', 'text-danger', 'text-success');
+      try {
+        const savedBooking = await saveBooking(booking);
+        bookingStatus.textContent = 'Solicitação recebida pela barbearia. Aguarde a confirmação do horário.';
+        bookingStatus.classList.add('text-success');
+        bookingForm.reset();
+        setTimeout(() => openWhatsApp(savedBooking), 200);
+        setTimeout(() => sendEmail(savedBooking), 500);
+        setTimeout(() => {
+          openGoogleCalendar(savedBooking);
+          downloadIcsFile(savedBooking);
+        }, 800);
+      } catch (error) {
+        bookingStatus.textContent = error.name === 'AbortError'
+          ? 'O servidor demorou a responder. Seus dados foram mantidos. Tente novamente nesta página para verificar o envio sem duplicar a reserva.'
+          : error instanceof TypeError
+            ? 'Não foi possível conectar à barbearia. Seus dados foram mantidos; verifique sua conexão e tente novamente.'
+            : error instanceof SyntaxError
+              ? 'O servidor retornou uma resposta inválida. Verifique a implantação do agendamento com a barbearia.'
+              : error.message;
         bookingStatus.classList.add('text-danger');
-        return;
+      } finally {
+        submitting = false;
+        submit.disabled = false;
+        submit.textContent = originalLabel;
       }
-
-      await saveBooking(booking);
-
-      bookingStatus.textContent = 'Agendamento salvo. WhatsApp, e-mail e calendário foram preparados para concluir a reserva.';
-      bookingStatus.classList.remove('d-none', 'text-danger');
-      bookingStatus.classList.add('text-success');
-      bookingForm.reset();
-
-      setTimeout(() => openWhatsApp(booking), 200);
-      setTimeout(() => sendEmail(booking), 500);
-      setTimeout(() => {
-        openGoogleCalendar(booking);
-        downloadIcsFile(booking);
-      }, 800);
     });
   }
 
@@ -168,3 +209,4 @@ document.addEventListener('DOMContentLoaded', () => {
   updateActiveNavLink();
   window.addEventListener('scroll', updateActiveNavLink, { passive: true });
 });
+

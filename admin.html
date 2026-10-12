@@ -1,80 +1,334 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FullPacakage Barber | Reservas</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <title>FullPackage Barber | Gestão</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
   <style>
     body {
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      background: #11140f;
+      color: #edf0e7;
+      font-family: Arial, sans-serif
     }
+
     .container {
-      padding-top: 3rem;
-      padding-bottom: 3rem;
+      max-width: 1440px;
+      padding: 40px 24px
     }
-    .card {
-      background: #1b1b1b;
-      border: 1px solid rgba(230, 173, 100, 0.35);
-      border-radius: 20px;
+
+    .card,
+    .metric {
+      background: #1e231a;
+      border: 1px solid #39412f;
+      color: #edf0e7;
+      border-radius: 12px
     }
-    th, td {
-      vertical-align: middle;
+
+    h1 {
+      font-weight: 700;
+      letter-spacing: -1px
     }
-    .badge {
-      font-size: 0.8rem;
+
+    .eyebrow {
+      color: #d3ed75;
+      font-size: 11px;
+      letter-spacing: 2px
     }
-  </style>
+
+    .btn-warning {
+      background: #d3ed75;
+      border-color: #d3ed75
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin: 24px 0
+    }
+
+    .metric {
+      padding: 22px
+    }
+
+    .metric small {
+      display: block;
+      color: #b9c4ad;
+      font-size: 12px
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 30px;
+      margin: 8px 0
+    }
+
+    .metric span {
+      font-size: 11px;
+      color: #aab89c
+    }
+
+    .form-control,
+    .form-select {
+      background-color: #11170c;
+      color: #edf0e7;
+      border-color: #657355;
+      color-scheme: dark
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      background-color: #11170c;
+      color: #fff;
+      border-color: #d3ed75
+    }
+
+    .table {
+      --bs-table-bg: #1e231a;
+      --bs-table-color: #edf0e7;
+      --bs-table-border-color: #39412f;
+      font-size: 13px
+    }
+
+    th,
+    td {
+      vertical-align: middle
+    }
+
+    th {
+      white-space: nowrap
+    }
+
+    td {
+      min-width: 90px
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 180px
+    }
+
+    .help {
+      font-size: 12px;
+      color: #b9c4ad
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: end;
+      gap: 20px;
+      flex-wrap: wrap
+    }
+
+    .filter-row label {
+      font-size: 12px
+    }
+
+    .filter-row select {
+      min-width: 180px
+    }
+
+    dialog {
+      background: #1e231a;
+      color: #fff;
+      border: 1px solid #657355;
+      border-radius: 14px;
+      padding: 28px;
+      width: min(440px, calc(100% - 32px))
+    }
+
+    dialog::backdrop {
+      background: #000b
+    }
+
+    #businessMessage {
+      white-space: pre-line
+    }
+
+    .text-success {
+      color: #d3ed75 !important
+    }
+
+    @media(max-width:800px) {
+      .metrics {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .metric strong {
+        font-size: 24px
+      }
+    }
+
+    @media(max-width:420px) {
+      .metrics {
+        grid-template-columns: 1fr
+      }
+
+      .container {
+        padding: 28px 16px
+      }
+    }
+  /* Responsive admin: keep actions visible instead of off-screen. */
+*,*::before,*::after{box-sizing:border-box}
+.container,header,.filter-row,.card,.metric{min-width:0}
+h1{font-size:clamp(1.65rem,4vw,2.7rem)}
+.metric strong{font-size:clamp(1.2rem,2.6vw,1.9rem);overflow-wrap:anywhere}
+.btn{min-height:44px;white-space:normal}
+td{overflow-wrap:anywhere;max-width:320px}
+#toolbar{max-width:100%}
+dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
+dialog input{font-size:16px!important}
+#businessMessage{overflow-wrap:anywhere}
+@media(max-width:900px){
+  #toolbar{width:100%;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))}
+  #toolbar.d-none{display:none!important}
+  .filter-row{display:grid;grid-template-columns:1fr 1fr;align-items:start}
+  .filter-row>div{min-width:0}.filter-row select{min-width:0;width:100%}
+  #reservationsCard .table-responsive{overflow:visible}
+  #reservationsCard table,#reservationsBody{display:block;width:100%}
+  #reservationsCard thead{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
+  #reservationsBody tr{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;padding:16px;margin:14px 0;border:1px solid #536047;border-radius:12px}
+  #reservationsBody td{display:block;min-width:0;max-width:none;border:0;background:transparent;box-shadow:none;padding:10px 0}
+  #reservationsBody td::before{content:attr(data-label);display:block;color:#aab89c;font-size:11px;margin-bottom:5px}
+  #reservationsBody td:last-child{grid-column:1/-1;border-top:1px solid #39412f}
+  #reservationsBody td[colspan]{grid-column:1/-1}
+  .actions{min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+}
+@media(max-width:480px){
+  .container{padding:24px 14px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .metric{padding:14px}.metric small,.metric span{font-size:11px}
+  #toolbar{grid-template-columns:1fr 1fr}#logoutButton{grid-column:1/-1}
+  .filter-row{gap:12px}.filter-row>label{grid-column:1/-1}
+  dialog{padding:22px 18px}dialog .d-flex{flex-wrap:wrap}dialog .btn{flex:1}
+}
+
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+  <main class="container">
+    <header class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
       <div>
-        <p class="text-warning fw-bold mb-1" style="letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.72rem;">Admin</p>
-        <h1 class="mb-0">Reservas</h1>
+        <p class="eyebrow">FULL PACKAGE / ADMIN</p>
+        <h1>Seu negócio, em números.</h1>
       </div>
-      <button class="btn btn-warning text-dark fw-semibold d-none" id="refreshButton" type="button">Atualizar</button>
-    </div>
-
-    <div class="card p-3 p-md-4 mb-4" id="accessCard">
+      <div id="toolbar" class="d-none d-flex gap-2 flex-wrap"><button id="walkInButton" type="button" class="btn btn-warning">+ Registrar atendimento</button><button id="refreshButton"
+          class="btn btn-warning">Atualizar</button><button id="clearHistoryButton" class="btn btn-outline-light">Limpar
+          histórico da lista</button><button id="logoutButton" class="btn btn-outline-light">Sair</button></div>
+    </header>
+    <div id="businessMessage" class="alert d-none" role="status" aria-live="polite"></div>
+    <section id="accessCard" class="card p-4">
       <form id="accessForm" class="row g-3 align-items-end">
-        <div class="col-md-9">
-          <label for="adminKey" class="form-label">Chave de acesso</label>
-          <input id="adminKey" name="adminKey" type="password" class="form-control" autocomplete="current-password" required>
-        </div>
-        <div class="col-md-3 d-grid">
-          <button class="btn btn-warning text-dark fw-semibold" type="submit">Entrar</button>
-        </div>
-        <p id="accessStatus" class="text-danger mb-0 d-none" role="alert"></p>
+        <div class="col-md-9"><label for="adminKey" class="form-label">Chave de acesso</label><input id="adminKey"
+            name="adminKey" type="password" class="form-control" autocomplete="current-password" required></div>
+        <div class="col-md-3 d-grid"><button class="btn btn-warning">Entrar</button></div>
       </form>
-    </div>
-
-    <div class="card p-3 p-md-4 d-none" id="reservationsCard">
-      <div class="table-responsive">
-        <table class="table table-dark table-striped align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Telefone</th>
-              <th>Serviço</th>
-              <th>Data</th>
-              <th>Horário</th>
-              <th>Observações</th>
-              <th>Recebido em</th>
-            </tr>
-          </thead>
-          <tbody id="reservationsBody">
-            <tr>
-              <td colspan="7" class="text-center text-secondary">Informe a chave de acesso.</td>
-            </tr>
-          </tbody>
-        </table>
+    </section>
+    <section id="dashboard" class="d-none"><p id="backendVersion" class="help"></p><div id="backendNotice" class="alert alert-warning d-none" role="status"><strong>O endereço configurado respondeu com a versão anterior do servidor.</strong><p>Aprovar e Cancelar continuam disponíveis. Concluir, Faltou e Arquivar exigem a versão 2.</p><p class="mb-0">Se você já implantou: confirme que editou a implantação existente, selecionou Nova versão e manteve a mesma URL /exec em admin.js. Depois clique em Atualizar.</p></div>
+      <div class="filter-row">
+        <div><label for="period" class="form-label">Período do atendimento</label><select id="period"
+            class="form-select">
+            <option value="all">Todo o período</option>
+            <option value="month">Este mês</option>
+          </select></div>
+        <div><label for="statusFilter" class="form-label">Status na lista</label><select id="statusFilter"
+            class="form-select">
+            <option value="all">Todos</option>
+            <option value="pending">Pendente</option>
+            <option value="approved">Aprovada</option>
+            <option value="completed">Concluída</option>
+            <option value="cancelled">Cancelada</option>
+            <option value="no_show">Não compareceu</option>
+          </select></div><label class="pb-2"><input id="showArchived" type="checkbox"> Mostrar arquivados</label>
       </div>
-    </div>
-  </div>
-
-  <script src="admin.js"></script>
+      <div class="metrics">
+        <article class="metric"><small>Reservas recebidas</small><strong id="totalMetric">0</strong><span
+            id="pendingMetric">0 aguardando atendimento</span></article>
+        <article class="metric"><small>Serviços realizados</small><strong id="completedMetric">0</strong><span id="completedBreakdown">0 com reserva · 0 sem agendamento</span></article>
+        <article class="metric"><small>Conversão em serviço</small><strong
+            id="conversionMetric">0%</strong><span>Reservas concluídas ÷ reservas recebidas</span></article>
+        <article class="metric"><small>Receita registrada</small><strong id="revenueMetric">R$ 0</strong><span
+            id="averageMetric">Ticket médio: R$ 0</span><span id="revenueBreakdown"></span></article>
+      </div>
+      <p class="help">Indicadores por data do serviço, incluindo arquivados. Atendimentos sem agendamento somam à receita e aos serviços realizados, mas não entram na conversão de reservas. Aprovar não conta como venda. Ao concluir,
+        informe o valor realmente recebido. Cancelados e faltas permanecem no total de reservas.</p>
+      <section class="card p-3 mb-4">
+        <h2 class="h5">Resultado por serviço</h2>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Serviço</th>
+                <th>Reservas</th>
+                <th>Concluídas</th>
+                <th>Conversão</th>
+                <th>Receita</th>
+              </tr>
+            </thead>
+            <tbody id="serviceSummary"></tbody>
+          </table>
+        </div>
+      </section>
+      <section id="reservationsCard" class="card p-3">
+        <h2 class="h5">Reservas <small id="listCount" class="help"></small></h2>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Nome / telefone</th>
+                <th>Serviço</th>
+                <th>Data / hora</th>
+                <th>Observações</th>
+                <th>Status</th>
+                <th>Recebido</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="reservationsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+    <dialog id="completeDialog">
+      <form id="completeForm"><p id="completeError" class="alert alert-danger d-none" role="alert"></p>
+        <h2 id="completeTitle" class="h4">Concluir atendimento</h2>
+        <p id="completeDescription" class="help"></p><label for="amountPaid" class="form-label">Valor realmente recebido
+          (R$)</label><input id="amountPaid" type="text" inputmode="decimal" autocomplete="off" class="form-control"
+          required>
+        <p class="help mt-2">Use 0 para um serviço gratuito. Não informe apenas o preço previsto.</p>
+        <div class="d-flex gap-2 mt-4"><button id="completeSubmit" type="submit" class="btn btn-warning">Salvar atendimento</button><button
+            id="closeComplete" type="button" class="btn btn-outline-light">Cancelar</button></div>
+      </form>
+    </dialog>
+    <dialog id="changeDialog" aria-labelledby="changeTitle"><h2 id="changeTitle" class="h4">Confirmar alteração</h2><p id="changeDescription"></p><p id="changeError" class="alert alert-danger d-none" role="alert"></p><div class="d-flex gap-2"><button id="confirmChange" type="button" class="btn btn-warning">Confirmar</button><button id="cancelChange" type="button" class="btn btn-outline-light">Voltar</button></div></dialog><dialog id="walkInDialog" aria-labelledby="walkInTitle">
+<form id="walkInForm">
+<h2 id="walkInTitle" class="h4">Registrar atendimento</h2>
+<p class="help">Cliente sem agendamento. O atendimento será registrado como concluído.</p>
+<p id="walkInError" class="alert alert-danger d-none" role="alert"></p>
+<p id="walkInUpgrade" class="alert alert-warning d-none">Publique a nova versão de google-apps-script.gs (versão 3) para ativar este recurso.</p>
+<label for="walkInName" class="form-label">Nome (opcional)</label>
+<input id="walkInName" name="name" maxlength="120" class="form-control mb-3" placeholder="Cliente avulso">
+<label for="walkInPhone" class="form-label">Telefone (opcional)</label>
+<input id="walkInPhone" name="phone" type="tel" maxlength="30" class="form-control mb-3">
+<label for="walkInService" class="form-label">Serviço realizado</label>
+<select id="walkInService" name="service" class="form-select mb-3" required>
+<option value="">Selecione</option><option>Corte Clássico</option><option>Aparar Barba</option><option>Fade &amp; Taper</option><option>Signature</option><option>Executivo</option><option>Outro</option>
+</select>
+<label for="walkInAmount" class="form-label">Valor recebido (R$)</label>
+<input id="walkInAmount" name="amountPaid" type="text" inputmode="decimal" class="form-control mb-3" placeholder="35,00" required>
+<label for="walkInDate" class="form-label">Data do atendimento</label>
+<input id="walkInDate" name="date" type="date" class="form-control mb-3" required>
+<label for="walkInNotes" class="form-label">Observações (opcional)</label>
+<textarea id="walkInNotes" name="notes" maxlength="2000" class="form-control mb-3" rows="2"></textarea>
+<div class="d-flex gap-2"><button id="walkInSubmit" type="submit" class="btn btn-warning">Registrar e somar à receita</button><button id="walkInClose" type="button" class="btn btn-outline-light">Voltar</button></div>
+</form></dialog>
+<script src="admin.js?v=walkins-3"></script>
+  </main>
 </body>
+
 </html>
