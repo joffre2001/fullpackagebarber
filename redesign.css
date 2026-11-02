@@ -25,3 +25,4 @@ html{scroll-padding-top:100px}.modern-barber{background:var(--bg);color:var(--te
   .modern-barber .brand-marquee{flex-wrap:wrap}
   .modern-barber .footer-content p{overflow-wrap:anywhere}
 }
+.developer-credit{display:block;margin-top:10px;font-size:11px;letter-spacing:.04em;color:#a7ad9d}.developer-credit strong{color:var(--accent);font-weight:600}
