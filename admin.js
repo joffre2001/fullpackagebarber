@@ -1,4 +1,4 @@
-const RESERVATIONS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw5CUgGI4QOFa5w_ni8_7DRLNPVIHI5aO_O1OBTIClFaNpkFQ5AqIaZrL-x12xTxI0w/exec';
+const RESERVATIONS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzeMbRWhmLhulO4x5BjjB_Z0t_706AgHTaBS4j4RLqWam_XHKHfCjdJqcXlcjjIftSR/exec';
 const $ = id => document.getElementById(id);
 const labels = { pending: 'Pendente', approved: 'Aprovada', completed: 'Concluída', cancelled: 'Cancelada', no_show: 'Não compareceu' };
 const money = value => Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });

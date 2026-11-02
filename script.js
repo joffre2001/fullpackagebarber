@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const yearElement = document.getElementById('currentYear');
-  const BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw5CUgGI4QOFa5w_ni8_7DRLNPVIHI5aO_O1OBTIClFaNpkFQ5AqIaZrL-x12xTxI0w/exec';
+  const BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzeMbRWhmLhulO4x5BjjB_Z0t_706AgHTaBS4j4RLqWam_XHKHfCjdJqcXlcjjIftSR/exec';
 
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
