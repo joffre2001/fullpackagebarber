@@ -66,7 +66,7 @@ function render() {
 function requiresUpgrade(action, values = {}) { if(action==='createWalkIn') return apiVersion<3; return apiVersion < 2 && !(action === 'updateStatus' && ['approved', 'cancelled'].includes(values.status)); }
 async function request(action, extra = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
+  const timeout = setTimeout(() => controller.abort(), action === 'saveSiteContent' ? 60000 : 20000);
   try {
     const response = await fetch(RESERVATIONS_ENDPOINT, { signal: controller.signal, method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ ...extra, action, adminKey }) });
     if (!response.ok) throw new Error('Erro HTTP ' + response.status + '. Verifique a implantação do Google Apps Script.');
@@ -122,13 +122,14 @@ async function mutate(action, values, success) {
   } finally { busy = false; render(); }
 }
 function logout() {
+  window.SiteEditor?.close();
   $('walkInDialog').close();
   adminKey = ''; bookings = []; apiVersion = 0; sessionStorage.removeItem('fullPacakageAdminKey'); clearInterval(timer);
   $('accessForm').reset(); $('accessCard').classList.remove('d-none'); $('dashboard').classList.add('d-none'); $('toolbar').classList.add('d-none'); $('completeDialog').close();
 }
 function startRefresh() {
   clearInterval(timer);
-  timer = setInterval(() => { if (adminKey && !document.hidden && !$('completeDialog').open && !$('changeDialog').open && !$('walkInDialog').open) load(); }, 30000);
+  timer = setInterval(() => { if (adminKey && !document.hidden && !$('completeDialog').open && !$('changeDialog').open && !$('walkInDialog').open && !$('siteEditor').open) load(); }, 30000);
 }
 $('accessForm').addEventListener('submit', async event => {
   event.preventDefault();

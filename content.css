@@ -1,0 +1,27 @@
+.site-promotion{width:min(520px,calc(100% - 32px));max-height:85dvh;overflow:auto;border:1px solid #d3ed75;background:#1d2118;color:#f4f2e9;padding:40px 30px}
+.site-promotion::backdrop{background:#000b;backdrop-filter:blur(4px)}
+.site-promotion h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,7vw,52px);line-height:1.1}
+.site-promotion .promo-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;margin:24px 0}
+.site-promotion .promo-close{position:absolute;right:8px;top:5px;min-width:44px;min-height:44px;border:0;background:transparent;color:#fff;font-size:30px}
+.preview-banner{padding:12px;background:#d3ed75;color:#17200e;text-align:center;font:600 12px Arial,sans-serif}
+#siteEditor{width:min(1100px,calc(100% - 24px));max-height:92dvh;padding:0;border:1px solid #657355}
+.editor-head,.editor-actions{padding:20px;background:#1e231a;position:sticky;z-index:2}
+.editor-head{top:0;border-bottom:1px solid #465039;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.editor-actions{bottom:0;border-top:1px solid #465039;display:flex;gap:12px;flex-wrap:wrap}
+.editor-body{padding:24px}
+.editor-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.editor-tabs button[aria-selected=true]{background:#d3ed75;color:#192014}
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.editor-grid label{display:block;font-size:13px}
+.editor-grid label input,.editor-grid label textarea,.editor-grid label select{margin-top:7px}
+.editor-item{border:1px solid #465039;border-radius:12px;padding:20px;margin:16px 0}
+.editor-item h3{font-size:18px}.editor-item img{width:110px;height:100px;object-fit:cover;margin:10px 0}
+.editor-item textarea{min-height:90px}.editor-item input[type=file]{width:100%}
+.editor-full{grid-column:1/-1}.editor-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.editor-status{white-space:pre-wrap;margin-bottom:18px}
+#editorPreview{width:min(1100px,calc(100% - 20px));height:92dvh;padding:12px}
+#editorPreview iframe{display:block;width:100%;height:calc(100% - 58px);background:#fff;border:0;margin-top:10px}
+#editorPreview[data-mobile=true] iframe{max-width:390px;margin-inline:auto}
+#siteEditor label{color:#e5ebdc}
+#siteEditor :focus-visible{outline:2px solid #d3ed75;outline-offset:3px}
+@media(max-width:640px){.editor-grid{grid-template-columns:1fr}.editor-body{padding:16px}.editor-head,.editor-actions{padding:14px}.editor-actions .btn{flex:1}.editor-head h2{font-size:20px}.editor-item{padding:14px}}

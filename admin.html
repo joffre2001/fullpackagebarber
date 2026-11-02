@@ -208,6 +208,7 @@ dialog input{font-size:16px!important}
 }
 
 </style>
+<link rel="stylesheet" href="content.css?v=1">
 </head>
 
 <body>
@@ -217,7 +218,7 @@ dialog input{font-size:16px!important}
         <p class="eyebrow">FULL PACKAGE / ADMIN</p>
         <h1>Seu negócio, em números.</h1>
       </div>
-      <div id="toolbar" class="d-none d-flex gap-2 flex-wrap"><button id="walkInButton" type="button" class="btn btn-warning">+ Registrar atendimento</button><button id="refreshButton"
+      <div id="toolbar" class="d-none d-flex gap-2 flex-wrap"><button id="editSiteButton" type="button" class="btn btn-outline-light">Editar website</button><button id="walkInButton" type="button" class="btn btn-warning">+ Registrar atendimento</button><button id="refreshButton"
           class="btn btn-warning">Atualizar</button><button id="clearHistoryButton" class="btn btn-outline-light">Limpar
           histórico da lista</button><button id="logoutButton" class="btn btn-outline-light">Sair</button></div>
     </header>
@@ -327,7 +328,31 @@ dialog input{font-size:16px!important}
 <textarea id="walkInNotes" name="notes" maxlength="2000" class="form-control mb-3" rows="2"></textarea>
 <div class="d-flex gap-2"><button id="walkInSubmit" type="submit" class="btn btn-warning">Registrar e somar à receita</button><button id="walkInClose" type="button" class="btn btn-outline-light">Voltar</button></div>
 </form></dialog>
-<script src="admin.js?v=walkins-3"></script>
+<dialog id="siteEditor" aria-labelledby="siteEditorTitle">
+  <header class="editor-head"><div><h2 id="siteEditorTitle" class="h4 mb-1">Editar website</h2><p class="help mb-0">Prepare as alterações, confira a prévia e publique quando estiver pronto.</p></div><button id="editorClose" class="btn btn-outline-light" type="button">Fechar</button></header>
+  <div class="editor-body">
+    <p id="editorStatus" class="editor-status help" role="status" aria-live="polite"></p>
+    <nav class="editor-tabs" role="tablist" aria-label="Conteúdo do website">
+      <button type="button" class="btn btn-outline-light" role="tab" data-tab="general" aria-selected="true">Textos e horários</button>
+      <button type="button" class="btn btn-outline-light" role="tab" data-tab="services" aria-selected="false">Serviços e preços</button>
+      <button type="button" class="btn btn-outline-light" role="tab" data-tab="packages" aria-selected="false">Pacotes</button>
+      <button type="button" class="btn btn-outline-light" role="tab" data-tab="gallery" aria-selected="false">Galeria</button>
+      <button type="button" class="btn btn-outline-light" role="tab" data-tab="promotion" aria-selected="false">Promoção</button>
+    </nav>
+    <section id="editorFields"></section>
+  </div>
+  <footer class="editor-actions">
+    <button id="editorPublish" type="button" class="btn btn-warning">Publicar alterações</button>
+    <button id="editorPreviewButton" type="button" class="btn btn-outline-light">Prévia</button>
+    <button id="editorReload" type="button" class="btn btn-outline-light">Descartar e recarregar</button>
+  </footer>
+</dialog>
+<dialog id="editorPreview" aria-label="Prévia do website">
+  <div class="d-flex gap-2"><button id="previewClose" type="button" class="btn btn-warning">Voltar ao editor</button><button id="previewSize" type="button" class="btn btn-outline-light">Ver no celular</button></div>
+  <iframe title="Prévia das alterações do website" id="previewFrame"></iframe>
+</dialog>
+
+<script src="site-defaults.js?v=1"></script><script src="site-content.js?v=1"></script><script src="admin.js?v=content-4"></script><script src="content-editor.js?v=1"></script>
   </main>
 </body>
 
